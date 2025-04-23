@@ -22,3 +22,18 @@ line.Size = UDim2.new(1, -40, 0, 2)
 line.Position = UDim2.new(0, 20, 0, 55)
 line.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
 line.BorderSizePixel = 0
+
+local icon = Instance.new("TextButton", gui)
+icon.Size = UDim2.new(0, 50, 0, 50)
+icon.Position = UDim2.new(0, 10, 1, -60)
+icon.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
+icon.Text = "7"
+icon.TextColor3 = Color3.fromRGB(255, 255, 255)
+icon.Font = Enum.Font.GothamBold
+icon.TextScaled = true
+icon.BorderSizePixel = 0
+icon.AutoButtonColor = true
+
+icon.MouseButton1Click:Connect(function()
+    frame.Visible = not frame.Visible
+end)
