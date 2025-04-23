@@ -73,7 +73,10 @@ icon.MouseButton1Click:Connect(function()
     main.Visible = not main.Visible
 end)
 
--- Aba Auto Farm
-local autoFarmTab = Instance.new("Frame", main)
-autoFarmTab.Size = UDim2.new(1, -20, 0, 120)
-autoFarmTab.Position = UDim2.new(0, 10, 0, 190)
+-- Aba Auto Farm (canto superior esquerdo)
+local autoFarmTab = Instance.new("Frame")
+autoFarmTab.Size = UDim2.new(0, 250, 0, 120)
+autoFarmTab.Position = UDim2.new(0, 10, 0, 10)
+autoFarmTab.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+autoFarmTab.BorderSizePixel = 0
+autoFarmTab.Parent = gui
