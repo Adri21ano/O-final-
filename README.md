@@ -73,21 +73,6 @@ icon.MouseButton1Click:Connect(function()
     main.Visible = not main.Visible
 end)
 
--- Aba Auto Farm (dentro da tela principal)
-local autoFarmFrame = Instance.new("Frame", main)
-autoFarmFrame.Size = UDim2.new(1, -20, 0, 180)
-autoFarmFrame.Position = UDim2.new(0, 10, 0, 50)
-autoFarmFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-autoFarmFrame.BorderSizePixel = 0
-
-local autoFarmTitle = Instance.new("TextLabel", autoFarmFrame)
-autoFarmTitle.Size = UDim2.new(1, 0, 0, 30)
-autoFarmTitle.Position = UDim2.new(0, 0, 0, 0)
-autoFarmTitle.Text = "Auto Farm"
-autoFarmTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
-autoFarmTitle.Font = Enum.Font.GothamBold
-autoFarmTitle.TextScaled = true
-autoFarmTitle.BackgroundTransparency = 1
 
 -- Botão para abrir/fechar a aba Auto Farm
 local openAutoFarmBtn = Instance.new("TextButton", main)
@@ -99,3 +84,41 @@ openAutoFarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 openAutoFarmBtn.Font = Enum.Font.GothamBold
 openAutoFarmBtn.TextScaled = true
 openAutoFarmBtn.BorderSizePixel = 0
+
+-- Aba oculta de Auto Farm
+local autoFarmFrame = Instance.new("Frame", main)
+autoFarmFrame.Size = UDim2.new(1, -20, 0, 180)
+autoFarmFrame.Position = UDim2.new(0, 10, 0, 90)
+autoFarmFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+autoFarmFrame.BorderSizePixel = 0
+autoFarmFrame.Visible = false
+
+local autoFarmTitle = Instance.new("TextLabel", autoFarmFrame)
+autoFarmTitle.Size = UDim2.new(1, 0, 0, 30)
+autoFarmTitle.Position = UDim2.new(0, 0, 0, 0)
+autoFarmTitle.Text = "Auto Farm"
+autoFarmTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
+autoFarmTitle.Font = Enum.Font.GothamBold
+autoFarmTitle.TextScaled = true
+autoFarmTitle.BackgroundTransparency = 1
+
+-- Botão de exemplo dentro da aba
+local btnFarm = Instance.new("TextButton", autoFarmFrame)
+btnFarm.Size = UDim2.new(1, -20, 0, 35)
+btnFarm.Position = UDim2.new(0, 10, 0, 50)
+btnFarm.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+btnFarm.Text = "Ativar Farm de Macacos"
+btnFarm.TextColor3 = Color3.fromRGB(255, 255, 255)
+btnFarm.Font = Enum.Font.GothamBold
+btnFarm.TextScaled = true
+btnFarm.BorderSizePixel = 0
+
+btnFarm.MouseButton1Click:Connect(function()
+    print("Farm de Macacos ativado!")
+    -- Adicione a função de farm real aqui
+end)
+
+-- Mostrar/Ocultar aba ao clicar no botão
+openAutoFarmBtn.MouseButton1Click:Connect(function()
+    autoFarmFrame.Visible = not autoFarmFrame.Visible
+end)
