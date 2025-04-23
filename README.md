@@ -88,3 +88,14 @@ autoFarmTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
 autoFarmTitle.Font = Enum.Font.GothamBold
 autoFarmTitle.TextScaled = true
 autoFarmTitle.BackgroundTransparency = 1
+
+-- Botão para abrir/fechar a aba Auto Farm
+local openAutoFarmBtn = Instance.new("TextButton", main)
+openAutoFarmBtn.Size = UDim2.new(0, 120, 0, 30)
+openAutoFarmBtn.Position = UDim2.new(0, 10, 0, 50)
+openAutoFarmBtn.BackgroundColor3 = Color3.fromRGB(100, 0, 150)
+openAutoFarmBtn.Text = "Auto Farm"
+openAutoFarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+openAutoFarmBtn.Font = Enum.Font.GothamBold
+openAutoFarmBtn.TextScaled = true
+openAutoFarmBtn.BorderSizePixel = 0
