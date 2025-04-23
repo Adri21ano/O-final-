@@ -69,3 +69,13 @@ makeDraggable(icon)
 icon.MouseButton1Click:Connect(function()
 	main.Visible = not main.Visible
 end)
+
+local autoFarmTab = Instance.new("TextButton", main)
+autoFarmTab.Size = UDim2.new(1, 0, 0, 50)
+autoFarmTab.Position = UDim2.new(0, 0, 0, 40)
+autoFarmTab.BackgroundColor3 = Color3.fromRGB(60, 0, 100)
+autoFarmTab.Text = "Auto Farm"
+autoFarmTab.TextColor3 = Color3.fromRGB(255, 255, 255)
+autoFarmTab.Font = Enum.Font.GothamBold
+autoFarmTab.TextScaled = true
+autoFarmTab.BorderSizePixel = 0
