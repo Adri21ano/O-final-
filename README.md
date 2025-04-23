@@ -73,83 +73,61 @@ icon.MouseButton1Click:Connect(function()
     main.Visible = not main.Visible
 end)
 
--- Aba de Auto Farm (canto superior direito)
-local autoFarmGui = Instance.new("Frame", gui)
-autoFarmGui.Size = UDim2.new(0, 200, 0, 80)
-autoFarmGui.Position = UDim2.new(1, -210, 0, 10)
-autoFarmGui.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-autoFarmGui.BorderSizePixel = 0
+-- Botão para abrir a aba Auto Farm
+local autoFarmBtn = Instance.new("TextButton", main)
+autoFarmBtn.Size = UDim2.new(0, 120, 0, 30)
+autoFarmBtn.Position = UDim2.new(0, 10, 0, 50)
+autoFarmBtn.BackgroundColor3 = Color3.fromRGB(90, 0, 120)
+autoFarmBtn.Text = "Auto Farm"
+autoFarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+autoFarmBtn.Font = Enum.Font.GothamBold
+autoFarmBtn.TextScaled = true
+autoFarmBtn.BorderSizePixel = 0
 
-local title = Instance.new("TextLabel", autoFarmGui)
-title.Size = UDim2.new(1, 0, 0, 25)
-title.Position = UDim2.new(0, 0, 0, 0)
-title.Text = "Auto Farm"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Font = Enum.Font.GothamBold
-title.TextScaled = true
-title.BackgroundTransparency = 1
+-- Aba Auto Farm oculta inicialmente
+local autoFarmFrame = Instance.new("Frame", main)
+autoFarmFrame.Size = UDim2.new(1, -20, 0, 100)
+autoFarmFrame.Position = UDim2.new(0, 10, 0, 90)
+autoFarmFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+autoFarmFrame.BorderSizePixel = 0
+autoFarmFrame.Visible = false
 
--- Toggle Auto Baú (bolinha deslizante)
+local titleAutoFarm = Instance.new("TextLabel", autoFarmFrame)
+titleAutoFarm.Size = UDim2.new(1, 0, 0, 25)
+titleAutoFarm.Position = UDim2.new(0, 0, 0, 0)
+titleAutoFarm.Text = "Auto Baú"
+titleAutoFarm.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleAutoFarm.Font = Enum.Font.GothamBold
+titleAutoFarm.TextScaled = true
+titleAutoFarm.BackgroundTransparency = 1
+
+-- Toggle deslizante de Auto Baú
 _G.AutoBau = false
 
-local toggleLabel = Instance.new("TextLabel", autoFarmGui)
-toggleLabel.Size = UDim2.new(0.6, 0, 0, 30)
-toggleLabel.Position = UDim2.new(0, 10, 0, 35)
-toggleLabel.Text = "Auto Baú"
-toggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-toggleLabel.Font = Enum.Font.Gotham
-toggleLabel.TextScaled = true
-toggleLabel.BackgroundTransparency = 1
-toggleLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-local toggle = Instance.new("Frame", autoFarmGui)
+local toggle = Instance.new("Frame", autoFarmFrame)
 toggle.Size = UDim2.new(0, 50, 0, 25)
-toggle.Position = UDim2.new(1, -60, 0, 37)
+toggle.Position = UDim2.new(1, -60, 0, 35)
 toggle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 toggle.BorderSizePixel = 0
-toggle.Name = "AutoBauToggle"
 Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
 
-local circle = Instance.new("Frame", toggle)
-circle.Size = UDim2.new(0, 23, 0, 23)
-circle.Position = UDim2.new(0, 1, 0, 1)
-circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-circle.BorderSizePixel = 0
-circle.Name = "Mover"
-Instance.new("UICorner", circle).CornerRadius = UDim.new(1, 0)
+local mover = Instance.new("Frame", toggle)
+mover.Size = UDim2.new(0, 23, 0, 23)
+mover.Position = UDim2.new(0, 1, 0, 1)
+mover.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+mover.BorderSizePixel = 0
+Instance.new("UICorner", mover).CornerRadius = UDim.new(1, 0)
 
 toggle.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         _G.AutoBau = not _G.AutoBau
         toggle.BackgroundColor3 = _G.AutoBau and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(100, 100, 100)
-        circle:TweenPosition(
+        mover:TweenPosition(
             _G.AutoBau and UDim2.new(1, -24, 0, 1) or UDim2.new(0, 1, 0, 1),
             Enum.EasingDirection.Out,
             Enum.EasingStyle.Sine,
             0.2,
             true
         )
-    end
-end)
-
--- Função de Auto Baú (teleporta suavemente)
-spawn(function()
-    while task.wait(1) do
-        if _G.AutoBau then
-            local char = player.Character or player.CharacterAdded:Wait()
-            local hrp = char:WaitForChild("HumanoidRootPart")
-            
-            for _, v in pairs(workspace:GetDescendants()) do
-                if v:IsA("TouchTransmitter") and v.Parent and (v.Parent.Name == "Chest1" or v.Parent.Name == "Chest2" or v.Parent.Name == "Chest3") then
-                    local chest = v.Parent
-                    if (hrp.Position - chest.Position).Magnitude > 5 then
-                        pcall(function()
-                            hrp.CFrame = chest.CFrame + Vector3.new(0, 5, 0)
-                            wait(0.5)
-                        end)
-                    end
-                end
-            end
-        end
     end
 end)
