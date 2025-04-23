@@ -73,10 +73,18 @@ icon.MouseButton1Click:Connect(function()
     main.Visible = not main.Visible
 end)
 
--- Aba Auto Farm (canto superior esquerdo)
-local autoFarmTab = Instance.new("Frame")
-autoFarmTab.Size = UDim2.new(0, 250, 0, 120)
-autoFarmTab.Position = UDim2.new(0, 10, 0, 10)
-autoFarmTab.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-autoFarmTab.BorderSizePixel = 0
-autoFarmTab.Parent = gui
+-- Aba Auto Farm (dentro da tela principal)
+local autoFarmFrame = Instance.new("Frame", main)
+autoFarmFrame.Size = UDim2.new(1, -20, 0, 180)
+autoFarmFrame.Position = UDim2.new(0, 10, 0, 50)
+autoFarmFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+autoFarmFrame.BorderSizePixel = 0
+
+local autoFarmTitle = Instance.new("TextLabel", autoFarmFrame)
+autoFarmTitle.Size = UDim2.new(1, 0, 0, 30)
+autoFarmTitle.Position = UDim2.new(0, 0, 0, 0)
+autoFarmTitle.Text = "Auto Farm"
+autoFarmTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
+autoFarmTitle.Font = Enum.Font.GothamBold
+autoFarmTitle.TextScaled = true
+autoFarmTitle.BackgroundTransparency = 1
