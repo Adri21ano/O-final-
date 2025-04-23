@@ -56,52 +56,6 @@ title.Font = Enum.Font.GothamBold
 title.TextColor3 = Color3.fromRGB(170, 0, 255)
 title.TextScaled = true
 
--- Aba Auto Farm
-local autoFarmTab = Instance.new("TextButton", main)
-autoFarmTab.Size = UDim2.new(1, 0, 0, 50)
-autoFarmTab.Position = UDim2.new(0, 0, 0, 40)
-autoFarmTab.BackgroundColor3 = Color3.fromRGB(60, 0, 100)
-autoFarmTab.Text = "Auto Farm"
-autoFarmTab.TextColor3 = Color3.fromRGB(255, 255, 255)
-autoFarmTab.Font = Enum.Font.GothamBold
-autoFarmTab.TextScaled = true
-autoFarmTab.BorderSizePixel = 0
-
--- Frame para as opções do Auto Farm (inicialmente escondido)
-local autoFarmFrame = Instance.new("Frame", main)
-autoFarmFrame.Size = UDim2.new(1, -20, 0, 250)
-autoFarmFrame.Position = UDim2.new(0, 10, 0, 90)
-autoFarmFrame.BackgroundTransparency = 0.5
-autoFarmFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-autoFarmFrame.Visible = false
-makeDraggable(autoFarmFrame)
-
--- Função para criar botões dentro da aba Auto Farm
-local function createAutoFarmButtons(parent)
-    local yPos = 0
-    local buttonHeight = 50
-
-    local function createBtn(txt, callback)
-        local btn = Instance.new("TextButton", parent)
-        btn.Size = UDim2.new(1, 0, 0, buttonHeight)
-        btn.Position = UDim2.new(0, 0, 0, yPos)
-        btn.BackgroundColor3 = Color3.fromRGB(60, 0, 100)
-        btn.BorderSizePixel = 0
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btn.Font = Enum.Font.GothamBold
-        btn.TextScaled = true
-        btn.Text = txt
-AUTO FARM
-
-
--- Chama a função para criar os botões dentro da aba Auto Farm
-createAutoFarmButtons(autoFarmFrame)
-
--- Alternar visibilidade da aba Auto Farm
-autoFarmTab.MouseButton1Click:Connect(function()
-    autoFarmFrame.Visible = not autoFarmFrame.Visible
-end)
-
 -- Ícone para esconder/mostrar o scripter
 local icon = Instance.new("TextButton", gui)
 icon.Size = UDim2.new(0, 50, 0, 50)
