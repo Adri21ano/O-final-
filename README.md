@@ -83,3 +83,21 @@ openFarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 openFarmBtn.Font = Enum.Font.GothamBold
 openFarmBtn.TextScaled = true
 openFarmBtn.BorderSizePixel = 0
+
+-- Auto Baú (teleporte seguro até os baús)
+spawn(function()
+    while task.wait(1) do
+        if _G.AutoBau then
+            for _, v in pairs(workspace:GetDescendants()) do
+                if v:IsA("TouchTransmitter") and v.Parent and v.Parent.Name == "Chest1" or v.Parent.Name == "Chest2" or v.Parent.Name == "Chest3" then
+                    local hum = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                    if hum and (hum.Position - v.Parent.Position).Magnitude > 5 then
+                        -- teleporte suave
+                        hum.CFrame = v.Parent.CFrame + Vector3.new(0, 3, 0)
+                        wait(0.4)
+                    end
+                end
+            end
+        end
+    end
+end)
