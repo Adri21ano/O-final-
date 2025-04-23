@@ -83,24 +83,3 @@ autoFarmTab.BorderSizePixel = 0
 local function createAutoFarmButtons(parent)
     local yPos = 0
     local buttonHeight = 50
-
-createBtn("Auto Farm Macacos", function()
-        _G.FarmMonkeys = true
-        spawn(function()
-            while _G.FarmMonkeys and task.wait() do
-                for _, mob in pairs(workspace.Enemies:GetChildren()) do
-                    if mob.Name == "Monkey" and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
-                        repeat
-                            pcall(function()
-                                local hrp = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-                                hrp.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)
-                                game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
-                                game:GetService("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
-                            end)
-                            task.wait()
-                        until mob.Humanoid.Health <= 0 or not _G.FarmMonkeys
-                    end
-                end
-            end
-        end)
-    end)
