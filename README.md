@@ -1,14 +1,18 @@
 local player = game.Players.LocalPlayer
-local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-gui.Name = "OMaestroGUI"
+local mouse = player:GetMouse()
 
-local function dragify(frame)
-	local dragging, dragInput, dragStart, startPos
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "OMaestro"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local function makeDraggable(frame)
+	local dragging = false
+	local dragInput, dragStart, startPos
 
 	local function update(input)
 		local delta = input.Position - dragStart
-		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-			startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 	end
 
 	frame.InputBegan:Connect(function(input)
@@ -16,11 +20,8 @@ local function dragify(frame)
 			dragging = true
 			dragStart = input.Position
 			startPos = frame.Position
-
 			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
-				end
+				if input.UserInputState == Enum.UserInputState.End then dragging = false end
 			end)
 		end
 	end)
@@ -32,44 +33,65 @@ local function dragify(frame)
 	end)
 
 	game:GetService("UserInputService").InputChanged:Connect(function(input)
-		if input == dragInput and dragging then
-			update(input)
-		end
+		if input == dragInput and dragging then update(input) end
 	end)
 end
 
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 400, 0, 250)
-frame.Position = UDim2.new(0.5, -200, 0.5, -125)
-frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-frame.BorderSizePixel = 0
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 380, 0, 300)
+main.Position = UDim2.new(0.5, -190, 0.5, -150)
+main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+main.BorderSizePixel = 0
+main.Visible = false
+main.Parent = gui
+makeDraggable(main)
 
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 50)
-title.BackgroundTransparency = 1
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1, 0, 0, 40)
 title.Text = "O MAESTRO"
-title.TextColor3 = Color3.fromRGB(138, 43, 226) -- Roxo bonito
+title.BackgroundTransparency = 0
+title.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 title.Font = Enum.Font.GothamBold
+title.TextColor3 = Color3.fromRGB(170, 0, 255)
 title.TextScaled = true
 
-local line = Instance.new("Frame", frame)
-line.Size = UDim2.new(1, -40, 0, 2)
-line.Position = UDim2.new(0, 20, 0, 55)
-line.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
-line.BorderSizePixel = 0
+local section = Instance.new("Frame", main)
+section.Size = UDim2.new(1, -20, 1, -60)
+section.Position = UDim2.new(0, 10, 0, 50)
+section.BackgroundTransparency = 1
+
+local function createButton(name, y)
+	local btn = Instance.new("TextButton", section)
+	btn.Size = UDim2.new(1, 0, 0, 40)
+	btn.Position = UDim2.new(0, 0, 0, y)
+	btn.BackgroundColor3 = Color3.fromRGB(60, 0, 100)
+	btn.BorderSizePixel = 0
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.GothamBold
+	btn.TextScaled = true
+	btn.Text = name
+	btn.MouseButton1Click:Connect(function()
+		print("Auto Farm ativado:", name)
+
+end)
+end
+
+createButton("Auto Farm Mundo 1", 0)
+createButton("Auto Farm Mundo 2", 50)
+createButton("Auto Farm Boss", 100)
 
 local icon = Instance.new("TextButton", gui)
 icon.Size = UDim2.new(0, 50, 0, 50)
 icon.Position = UDim2.new(0, 10, 1, -60)
-icon.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
+icon.BackgroundColor3 = Color3.fromRGB(170, 0, 255)
 icon.Text = "7"
 icon.TextColor3 = Color3.fromRGB(255, 255, 255)
 icon.Font = Enum.Font.GothamBold
 icon.TextScaled = true
 icon.BorderSizePixel = 0
-icon.AutoButtonColor = true
+makeDraggable(icon)
 
 icon.MouseButton1Click:Connect(function()
-    frame.Visible = not frame.Visible
+	main.Visible = not main.Visible
 end)
+
