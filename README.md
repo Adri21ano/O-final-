@@ -73,52 +73,81 @@ icon.MouseButton1Click:Connect(function()
     main.Visible = not main.Visible
 end)
 
-
 -- Botão para abrir/fechar a aba Auto Farm
-local openAutoFarmBtn = Instance.new("TextButton", main)
-openAutoFarmBtn.Size = UDim2.new(0, 120, 0, 30)
-openAutoFarmBtn.Position = UDim2.new(0, 10, 0, 50)
-openAutoFarmBtn.BackgroundColor3 = Color3.fromRGB(100, 0, 150)
-openAutoFarmBtn.Text = "Auto Farm"
-openAutoFarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-openAutoFarmBtn.Font = Enum.Font.GothamBold
-openAutoFarmBtn.TextScaled = true
-openAutoFarmBtn.BorderSizePixel = 0
+local openFarmBtn = Instance.new("TextButton", main)
+openFarmBtn.Size = UDim2.new(0, 120, 0, 30)
+openFarmBtn.Position = UDim2.new(0, 10, 0, 50)
+openFarmBtn.BackgroundColor3 = Color3.fromRGB(90, 0, 120)
+openFarmBtn.Text = "Auto Farm"
+openFarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+openFarmBtn.Font = Enum.Font.GothamBold
+openFarmBtn.TextScaled = true
+openFarmBtn.BorderSizePixel = 0
 
--- Aba oculta de Auto Farm
-local autoFarmFrame = Instance.new("Frame", main)
-autoFarmFrame.Size = UDim2.new(1, -20, 0, 180)
-autoFarmFrame.Position = UDim2.new(0, 10, 0, 90)
-autoFarmFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-autoFarmFrame.BorderSizePixel = 0
-autoFarmFrame.Visible = false
+-- Frame da aba Auto Farm
+local farmAba = Instance.new("Frame", main)
+farmAba.Size = UDim2.new(1, -20, 0, 200)
+farmAba.Position = UDim2.new(0, 10, 0, 90)
+farmAba.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+farmAba.BorderSizePixel = 0
+farmAba.Visible = false
 
-local autoFarmTitle = Instance.new("TextLabel", autoFarmFrame)
-autoFarmTitle.Size = UDim2.new(1, 0, 0, 30)
-autoFarmTitle.Position = UDim2.new(0, 0, 0, 0)
-autoFarmTitle.Text = "Auto Farm"
-autoFarmTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
-autoFarmTitle.Font = Enum.Font.GothamBold
-autoFarmTitle.TextScaled = true
-autoFarmTitle.BackgroundTransparency = 1
+local toggles = {
+    {label = "Farm de Level", var = "_G.FarmLevel"},
+    {label = "Farm de Espada", var = "_G.FarmEspada"},
+    {label = "Farm de Arma", var = "_G.FarmArma"},
+    {label = "Farm de Itens", var = "_G.FarmItens"},
+}
 
--- Botão de exemplo dentro da aba
-local btnFarm = Instance.new("TextButton", autoFarmFrame)
-btnFarm.Size = UDim2.new(1, -20, 0, 35)
-btnFarm.Position = UDim2.new(0, 10, 0, 50)
-btnFarm.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
-btnFarm.Text = "Ativar Farm de Macacos"
-btnFarm.TextColor3 = Color3.fromRGB(255, 255, 255)
-btnFarm.Font = Enum.Font.GothamBold
-btnFarm.TextScaled = true
-btnFarm.BorderSizePixel = 0
+for i, t in ipairs(toggles) do
+    _G[t.var] = false
 
-btnFarm.MouseButton1Click:Connect(function()
-    print("Farm de Macacos ativado!")
-    -- Adicione a função de farm real aqui
+    local holder = Instance.new("Frame", farmAba)
+    holder.Size = UDim2.new(1, -20, 0, 30)
+    holder.Position = UDim2.new(0, 10, 0, 10 + (i - 1) * 40)
+    holder.BackgroundTransparency = 1
+
+    local label = Instance.new("TextLabel", holder)
+    label.Size = UDim2.new(0.7, 0, 1, 0)
+    label.Text = t.label
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Font = Enum.Font.Gotham
+    label.TextScaled = true
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local toggle = Instance.new("TextButton", holder)
+    toggle.Size = UDim2.new(0, 30, 0, 30)
+    toggle.Position = UDim2.new(1, -35, 0, 0)
+    toggle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    toggle.Text = ""
+    toggle.BorderSizePixel = 0
+    Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
+
+    local function atualizar()
+        toggle.BackgroundColor3 = _G[t.var] and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(100, 100, 100)
+    end
+
+    toggle.MouseButton1Click:Connect(function()
+        _G[t.var] = not _G[t.var]
+        atualizar()
+        print(t.label .. ": " .. tostring(_G[t.var]))
+    end)
+
+    atualizar()
+end
+
+-- Abrir/Fechar a aba
+openFarmBtn.MouseButton1Click:Connect(function()
+    farmAba.Visible = not farmAba.Visible
 end)
 
--- Mostrar/Ocultar aba ao clicar no botão
-openAutoFarmBtn.MouseButton1Click:Connect(function()
-    autoFarmFrame.Visible = not autoFarmFrame.Visible
+-- Auto clicker suave ativado com Farm de Level
+spawn(function()
+    while task.wait(0.3) do
+        if _G.FarmLevel then
+            mouse1click()
+        end
+    end
 end)
+
