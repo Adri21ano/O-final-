@@ -25,7 +25,7 @@ local function makeDraggable(frame)
 			end)
 		end
 	end)
- 
+
 	frame.InputChanged:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 			dragInput = input
@@ -55,41 +55,6 @@ title.Font = Enum.Font.GothamBold
 title.TextColor3 = Color3.fromRGB(170, 0, 255)
 title.TextScaled = true
 
-local function createAutoFarmButtons(parent)
-    local function createBtn(txt, yPos, callback)
-        local btn = Instance.new("TextButton", parent)
-        btn.Size = UDim2.new(1, 0, 0, 40)
-        btn.Position = UDim2.new(0, 0, 0, yPos)
-        btn.BackgroundColor3 = Color3.fromRGB(60, 0, 100)
-        btn.BorderSizePixel = 0
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btn.Font = Enum.Font.GothamBold
-        btn.TextScaled = true
-        btn.Text = txt
-        btn.MouseButton1Click:Connect(callback)
-    end
-
-    createBtn("Auto Farm Macacos", 0, function()
-        _G.FarmMonkeys = true
-        spawn(function()
-            while _G.FarmMonkeys and task.wait() do
-                for _, mob in pairs(workspace.Enemies:GetChildren()) do
-                    if mob.Name == "Monkey" and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
-                        repeat
-                            pcall(function()
-                                local hrp = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-                                hrp.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)
-                                game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
-                                game:GetService("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
-                            end)
-                            task.wait()
-                        until mob.Humanoid.Health <= 0 or not _G.FarmMonkeys
-                    end
-                end
-            end
-        end)
-    end)
-
 local icon = Instance.new("TextButton", gui)
 icon.Size = UDim2.new(0, 50, 0, 50)
 icon.Position = UDim2.new(0, 10, 1, -60)
@@ -104,4 +69,3 @@ makeDraggable(icon)
 icon.MouseButton1Click:Connect(function()
 	main.Visible = not main.Visible
 end)
-
