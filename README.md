@@ -73,40 +73,29 @@ icon.MouseButton1Click:Connect(function()
     main.Visible = not main.Visible
 end)
 
--- Botão para abrir a aba Auto Farm
-local autoFarmBtn = Instance.new("TextButton", main)
-autoFarmBtn.Size = UDim2.new(0, 120, 0, 30)
-autoFarmBtn.Position = UDim2.new(0, 10, 0, 50)
-autoFarmBtn.BackgroundColor3 = Color3.fromRGB(90, 0, 120)
-autoFarmBtn.Text = "Auto Farm"
-autoFarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-autoFarmBtn.Font = Enum.Font.GothamBold
-autoFarmBtn.TextScaled = true
-autoFarmBtn.BorderSizePixel = 0
+-- Aba Auto Farm no canto superior esquerdo
+local autoFarmAba = Instance.new("Frame", gui)
+autoFarmAba.Size = UDim2.new(0, 220, 0, 80)
+autoFarmAba.Position = UDim2.new(0, 10, 0, 10)
+autoFarmAba.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+autoFarmAba.BorderSizePixel = 0
+autoFarmAba.Visible = false
 
--- Aba Auto Farm oculta inicialmente
-local autoFarmFrame = Instance.new("Frame", main)
-autoFarmFrame.Size = UDim2.new(1, -20, 0, 100)
-autoFarmFrame.Position = UDim2.new(0, 10, 0, 90)
-autoFarmFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-autoFarmFrame.BorderSizePixel = 0
-autoFarmFrame.Visible = false
+local tituloAutoFarm = Instance.new("TextLabel", autoFarmAba)
+tituloAutoFarm.Size = UDim2.new(1, 0, 0, 25)
+tituloAutoFarm.Position = UDim2.new(0, 0, 0, 0)
+tituloAutoFarm.Text = "Auto Baú"
+tituloAutoFarm.TextColor3 = Color3.fromRGB(255, 255, 255)
+tituloAutoFarm.Font = Enum.Font.GothamBold
+tituloAutoFarm.TextScaled = true
+tituloAutoFarm.BackgroundTransparency = 1
 
-local titleAutoFarm = Instance.new("TextLabel", autoFarmFrame)
-titleAutoFarm.Size = UDim2.new(1, 0, 0, 25)
-titleAutoFarm.Position = UDim2.new(0, 0, 0, 0)
-titleAutoFarm.Text = "Auto Baú"
-titleAutoFarm.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleAutoFarm.Font = Enum.Font.GothamBold
-titleAutoFarm.TextScaled = true
-titleAutoFarm.BackgroundTransparency = 1
-
--- Toggle deslizante de Auto Baú
+-- Toggle estilo bolinha deslizante
 _G.AutoBau = false
 
-local toggle = Instance.new("Frame", autoFarmFrame)
+local toggle = Instance.new("Frame", autoFarmAba)
 toggle.Size = UDim2.new(0, 50, 0, 25)
-toggle.Position = UDim2.new(1, -60, 0, 35)
+toggle.Position = UDim2.new(1, -60, 0, 40)
 toggle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 toggle.BorderSizePixel = 0
 Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
@@ -129,5 +118,41 @@ toggle.InputBegan:Connect(function(input)
             0.2,
             true
         )
+    end
+end)
+
+-- Botão para abrir/fechar a aba Auto Farm
+local btnAutoFarm = Instance.new("TextButton", gui)
+btnAutoFarm.Size = UDim2.new(0, 50, 0, 25)
+btnAutoFarm.Position = UDim2.new(0, 10, 0, 95)
+btnAutoFarm.BackgroundColor3 = Color3.fromRGB(90, 0, 150)
+btnAutoFarm.Text = "Farm"
+btnAutoFarm.TextColor3 = Color3.fromRGB(255, 255, 255)
+btnAutoFarm.Font = Enum.Font.GothamBold
+btnAutoFarm.TextScaled = true
+btnAutoFarm.BorderSizePixel = 0
+
+btnAutoFarm.MouseButton1Click:Connect(function()
+    autoFarmAba.Visible = not autoFarmAba.Visible
+end)
+
+-- Farm de Baús com segurança
+spawn(function()
+    while task.wait(1) do
+        if _G.AutoBau then
+            local char = player.Character or player.CharacterAdded:Wait()
+            local hrp = char:WaitForChild("HumanoidRootPart")
+            for _, v in pairs(workspace:GetDescendants()) do
+                if v:IsA("TouchTransmitter") and v.Parent and (v.Parent.Name == "Chest1" or v.Parent.Name == "Chest2" or v.Parent.Name == "Chest3") then
+                    local chest = v.Parent
+                    if (hrp.Position - chest.Position).Magnitude > 5 then
+                        pcall(function()
+                            hrp.CFrame = chest.CFrame + Vector3.new(0, 5, 0)
+                            wait(0.5)
+                        end)
+                    end
+                end
+            end
+        end
     end
 end)
