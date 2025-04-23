@@ -91,48 +91,8 @@ local function createAutoFarmButtons(parent)
         btn.Font = Enum.Font.GothamBold
         btn.TextScaled = true
         btn.Text = txt
+AUTO FARM
 
-        -- Ao clicar no botão, chama o callback
-        btn.MouseButton1Click:Connect(callback)
-
-        -- Atualiza a posição para o próximo botão
-        yPos = yPos + buttonHeight + 10  -- Aumenta a posição Y para o próximo botão (com 10px de distância)
-    end
-
-    -- Auto Farm Macacos
-    createBtn("Auto Farm Macacos", function()
-        _G.FarmMonkeys = true
-        spawn(function()
-            while _G.FarmMonkeys and task.wait() do
-                for _, mob in pairs(workspace.Enemies:GetChildren()) do
-                    if mob.Name == "Monkey" and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
-                        repeat
-                            pcall(function()
-                                local hrp = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-                                hrp.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)
-                                game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
-                                game:GetService("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
-                            end)
-                            task.wait()
-                        until mob.Humanoid.Health <= 0 or not _G.FarmMonkeys
-                    end
-                end
-            end
-        end)
-    end)
-
-    -- Placeholder para Auto Farm Mundo 1
-    createBtn("Auto Farm Mundo 1", function()
-        print("Auto Farm Mundo 1 ativado!")
-        -- Adicionar código para farm Mundo 1
-    end)
-
-    -- Placeholder para Auto Farm Boss
-    createBtn("Auto Farm Boss", function()
-        print("Auto Farm Boss ativado!")
-        -- Adicionar código para farm Boss
-    end)
-end
 
 -- Chama a função para criar os botões dentro da aba Auto Farm
 createAutoFarmButtons(autoFarmFrame)
