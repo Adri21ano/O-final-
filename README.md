@@ -73,27 +73,36 @@ icon.MouseButton1Click:Connect(function()
     main.Visible = not main.Visible
 end)
 
--- Aba Auto Farm no canto superior esquerdo
-local autoFarmAba = Instance.new("Frame", gui)
-autoFarmAba.Size = UDim2.new(0, 220, 0, 80)
-autoFarmAba.Position = UDim2.new(0, 10, 0, 10)
-autoFarmAba.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-autoFarmAba.BorderSizePixel = 0
-autoFarmAba.Visible = false
+-- Aba Auto Farm (visível ao iniciar no canto superior esquerdo)
+local autoFarmFrame = Instance.new("Frame", main)
+autoFarmFrame.Size = UDim2.new(0, 220, 0, 100)
+autoFarmFrame.Position = UDim2.new(0, 10, 0, 10)
+autoFarmFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+autoFarmFrame.BorderSizePixel = 0
 
-local tituloAutoFarm = Instance.new("TextLabel", autoFarmAba)
-tituloAutoFarm.Size = UDim2.new(1, 0, 0, 25)
-tituloAutoFarm.Position = UDim2.new(0, 0, 0, 0)
-tituloAutoFarm.Text = "Auto Baú"
-tituloAutoFarm.TextColor3 = Color3.fromRGB(255, 255, 255)
-tituloAutoFarm.Font = Enum.Font.GothamBold
-tituloAutoFarm.TextScaled = true
-tituloAutoFarm.BackgroundTransparency = 1
+local autoFarmTitle = Instance.new("TextLabel", autoFarmFrame)
+autoFarmTitle.Size = UDim2.new(1, 0, 0, 25)
+autoFarmTitle.Position = UDim2.new(0, 0, 0, 0)
+autoFarmTitle.Text = "Auto Farm"
+autoFarmTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+autoFarmTitle.Font = Enum.Font.GothamBold
+autoFarmTitle.TextScaled = true
+autoFarmTitle.BackgroundTransparency = 1
 
--- Toggle estilo bolinha deslizante
+-- Toggle deslizante do Auto Baú
 _G.AutoBau = false
 
-local toggle = Instance.new("Frame", autoFarmAba)
+local labelBau = Instance.new("TextLabel", autoFarmFrame)
+labelBau.Size = UDim2.new(0.6, 0, 0, 25)
+labelBau.Position = UDim2.new(0, 10, 0, 40)
+labelBau.Text = "Auto Baú"
+labelBau.TextColor3 = Color3.fromRGB(255, 255, 255)
+labelBau.Font = Enum.Font.Gotham
+labelBau.TextScaled = true
+labelBau.BackgroundTransparency = 1
+labelBau.TextXAlignment = Enum.TextXAlignment.Left
+
+local toggle = Instance.new("Frame", autoFarmFrame)
 toggle.Size = UDim2.new(0, 50, 0, 25)
 toggle.Position = UDim2.new(1, -60, 0, 40)
 toggle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
@@ -108,51 +117,15 @@ mover.BorderSizePixel = 0
 Instance.new("UICorner", mover).CornerRadius = UDim.new(1, 0)
 
 toggle.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        _G.AutoBau = not _G.AutoBau
-        toggle.BackgroundColor3 = _G.AutoBau and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(100, 100, 100)
-        mover:TweenPosition(
-            _G.AutoBau and UDim2.new(1, -24, 0, 1) or UDim2.new(0, 1, 0, 1),
-            Enum.EasingDirection.Out,
-            Enum.EasingStyle.Sine,
-            0.2,
-            true
-        )
-    end
-end)
-
--- Botão para abrir/fechar a aba Auto Farm
-local btnAutoFarm = Instance.new("TextButton", gui)
-btnAutoFarm.Size = UDim2.new(0, 50, 0, 25)
-btnAutoFarm.Position = UDim2.new(0, 10, 0, 95)
-btnAutoFarm.BackgroundColor3 = Color3.fromRGB(90, 0, 150)
-btnAutoFarm.Text = "Farm"
-btnAutoFarm.TextColor3 = Color3.fromRGB(255, 255, 255)
-btnAutoFarm.Font = Enum.Font.GothamBold
-btnAutoFarm.TextScaled = true
-btnAutoFarm.BorderSizePixel = 0
-
-btnAutoFarm.MouseButton1Click:Connect(function()
-    autoFarmAba.Visible = not autoFarmAba.Visible
-end)
-
--- Farm de Baús com segurança
-spawn(function()
-    while task.wait(1) do
-        if _G.AutoBau then
-            local char = player.Character or player.CharacterAdded:Wait()
-            local hrp = char:WaitForChild("HumanoidRootPart")
-            for _, v in pairs(workspace:GetDescendants()) do
-                if v:IsA("TouchTransmitter") and v.Parent and (v.Parent.Name == "Chest1" or v.Parent.Name == "Chest2" or v.Parent.Name == "Chest3") then
-                    local chest = v.Parent
-                    if (hrp.Position - chest.Position).Magnitude > 5 then
-                        pcall(function()
-                            hrp.CFrame = chest.CFrame + Vector3.new(0, 5, 0)
-                            wait(0.5)
-                        end)
-                    end
-                end
-            end
-        end
-    end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		_G.AutoBau = not _G.AutoBau
+		toggle.BackgroundColor3 = _G.AutoBau and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(100, 100, 100)
+		mover:TweenPosition(
+			_G.AutoBau and UDim2.new(1, -24, 0, 1) or UDim2.new(0, 1, 0, 1),
+			Enum.EasingDirection.Out,
+			Enum.EasingStyle.Sine,
+			0.2,
+			true
+		)
+	end
 end)
