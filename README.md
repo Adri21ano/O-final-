@@ -73,59 +73,117 @@ icon.MouseButton1Click:Connect(function()
     main.Visible = not main.Visible
 end)
 
--- Aba Auto Farm (visível ao iniciar no canto superior esquerdo)
+-- Aba Auto Farm no canto superior esquerdo do painel
 local autoFarmFrame = Instance.new("Frame", main)
-autoFarmFrame.Size = UDim2.new(0, 220, 0, 100)
+autoFarmFrame.Size = UDim2.new(0, 220, 0, 110)
 autoFarmFrame.Position = UDim2.new(0, 10, 0, 10)
-autoFarmFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-autoFarmFrame.BorderSizePixel = 0
+autoFarmFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+autoFarmFrame.Visible = false
 
+-- Título da aba
 local autoFarmTitle = Instance.new("TextLabel", autoFarmFrame)
-autoFarmTitle.Size = UDim2.new(1, 0, 0, 25)
-autoFarmTitle.Position = UDim2.new(0, 0, 0, 0)
-autoFarmTitle.Text = "Auto Farm"
+autoFarmTitle.Size = UDim2.new(1, 0, 0, 30)
+autoFarmTitle.Text = "Auto Farm Nível"
+autoFarmTitle.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 autoFarmTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 autoFarmTitle.Font = Enum.Font.GothamBold
 autoFarmTitle.TextScaled = true
-autoFarmTitle.BackgroundTransparency = 1
 
--- Toggle deslizante do Auto Baú
-_G.AutoBau = false
+-- Botão para mostrar/esconder a aba
+local toggleAutoFarmBtn = Instance.new("TextButton", main)
+toggleAutoFarmBtn.Size = UDim2.new(0, 120, 0, 30)
+toggleAutoFarmBtn.Position = UDim2.new(0, 10, 0, 60)
+toggleAutoFarmBtn.BackgroundColor3 = Color3.fromRGB(120, 0, 180)
+toggleAutoFarmBtn.Text = "Auto Farm"
+toggleAutoFarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleAutoFarmBtn.Font = Enum.Font.Gotham
+toggleAutoFarmBtn.TextScaled = true
 
-local labelBau = Instance.new("TextLabel", autoFarmFrame)
-labelBau.Size = UDim2.new(0.6, 0, 0, 25)
-labelBau.Position = UDim2.new(0, 10, 0, 40)
-labelBau.Text = "Auto Baú"
-labelBau.TextColor3 = Color3.fromRGB(255, 255, 255)
-labelBau.Font = Enum.Font.Gotham
-labelBau.TextScaled = true
-labelBau.BackgroundTransparency = 1
-labelBau.TextXAlignment = Enum.TextXAlignment.Left
+toggleAutoFarmBtn.MouseButton1Click:Connect(function()
+    autoFarmFrame.Visible = not autoFarmFrame.Visible
+end)
 
-local toggle = Instance.new("Frame", autoFarmFrame)
-toggle.Size = UDim2.new(0, 50, 0, 25)
-toggle.Position = UDim2.new(1, -60, 0, 40)
-toggle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-toggle.BorderSizePixel = 0
-Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
+-- Botão deslizante de ativar/desativar Auto Farm
+local toggleFarm = Instance.new("TextButton", autoFarmFrame)
+toggleFarm.Size = UDim2.new(0, 200, 0, 40)
+toggleFarm.Position = UDim2.new(0, 10, 0, 60)
+toggleFarm.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+toggleFarm.Text = "Auto Farm [DESLIGADO]"
+toggleFarm.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleFarm.Font = Enum.Font.Gotham
+toggleFarm.TextScaled = true
 
-local mover = Instance.new("Frame", toggle)
-mover.Size = UDim2.new(0, 23, 0, 23)
-mover.Position = UDim2.new(0, 1, 0, 1)
-mover.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-mover.BorderSizePixel = 0
-Instance.new("UICorner", mover).CornerRadius = UDim.new(1, 0)
+-- Lógica do Auto Farm
+local autoFarmAtivo = false
 
-toggle.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		_G.AutoBau = not _G.AutoBau
-		toggle.BackgroundColor3 = _G.AutoBau and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(100, 100, 100)
-		mover:TweenPosition(
-			_G.AutoBau and UDim2.new(1, -24, 0, 1) or UDim2.new(0, 1, 0, 1),
-			Enum.EasingDirection.Out,
-			Enum.EasingStyle.Sine,
-			0.2,
-			true
-		)
-	end
+local function iniciarAutoFarm()
+    local player = game.Players.LocalPlayer
+    local enemiesFolder = workspace:WaitForChild("Enemies")
+    local quests = workspace:FindFirstChild("QuestNPCs")
+
+    spawn(function()
+        while autoFarmAtivo do
+            local level = player:FindFirstChild("Data") and player.Data:FindFirstChild("Level") and player.Data.Level.Value or 1
+            local questName, enemyName
+
+            -- Determinar missão e inimigo baseado no nível (exemplo simplificado)
+            if level < 10 then
+                questName = "BanditQuest1"
+                enemyName = "Bandit"
+            elseif level < 30 then
+                questName = "BanditQuest2"
+                enemyName = "Brute"
+            elseif level < 60 then
+                questName = "MonkeyQuest"
+                enemyName = "Monkey"
+            elseif level < 90 then
+                questName = "GorillaQuest"
+                enemyName = "Gorilla"
+            else
+                questName = "DefaultQuest"
+                enemyName = "DefaultEnemy"
+            end
+
+            -- Aceitar missão
+            if quests and quests:FindFirstChild(questName) then
+                local npc = quests[questName]
+                if npc:FindFirstChild("Head") and npc.Head:FindFirstChild("ClickDetector") then
+                    fireclickdetector(npc.Head.ClickDetector)
+                    wait(1)
+                end
+            end
+
+            -- Procurar e atacar inimigos
+            for _, npc in pairs(enemiesFolder:GetChildren()) do
+                if npc.Name == enemyName and npc:FindFirstChild("HumanoidRootPart") and npc:FindFirstChild("Humanoid") and npc.Humanoid.Health > 0 then
+                    local character = player.Character or player.CharacterAdded:Wait()
+                    local root = character:WaitForChild("HumanoidRootPart")
+                    local tool = character:FindFirstChildOfClass("Tool")
+
+                    repeat
+                        root.CFrame = npc.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+                        if tool then
+                            tool:Activate() -- Ataca com espada ou estilo de luta
+                        end
+                        wait(0.25)
+                    until npc.Humanoid.Health <= 0 or not autoFarmAtivo
+                end
+            end
+
+            wait(1)
+        end
+    end)
+end
+
+-- Alternar o estado do Auto Farm
+toggleFarm.MouseButton1Click:Connect(function()
+    autoFarmAtivo = not autoFarmAtivo
+    if autoFarmAtivo then
+        toggleFarm.Text = "Auto Farm [LIGADO]"
+        toggleFarm.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+        iniciarAutoFarm()
+    else
+        toggleFarm.Text = "Auto Farm [DESLIGADO]"
+        toggleFarm.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+    end
 end)
