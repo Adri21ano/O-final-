@@ -1,114 +1,152 @@
--- O MAESTRO - Scripter Profissional Blox Fruits
--- Desenvolvido com base no Ninja Hub e outros hubs populares
+-- Início
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "OMaestro"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Carregar UI Library
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+--===[ FUNÇÃO DE ARRASTAR ELEMENTOS ]===--
+local function makeDraggable(frame)
+    local dragging, dragInput, dragStart, startPos = false
 
-local Window = OrionLib:MakeWindow({
-    Name = "O MAESTRO - Blox Fruits",
-    HidePremium = false,
-    SaveConfig = true,
-    ConfigFolder = "OMaestroHub"
-})
+    local function update(input)
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
 
-OrionLib:MakeNotification({
-    Name = "Bem-vindo!",
-    Content = "O MAESTRO está ativo!",
-    Image = "rbxassetid://4483345998",
-    Time = 5
-})
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging, dragStart, startPos = true, input.Position, frame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then dragging = false end
+            end)
+        end
+    end)
 
--- Variáveis Globais
-getgenv().AutoFarm = false
-getgenv().AutoStats = false
-getgenv().StatType = "Melee"
-getgenv().AutoHaki = false
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
 
--- Função de Auto Haki
-function EnableHaki()
-    local args = {[1] = "Buso"}
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input == dragInput and dragging then update(input) end
+    end)
 end
 
--- AUTO FARM
-local FarmTab = Window:MakeTab({
-    Name = "Auto Farm",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+--===[ FRAME PRINCIPAL ]===--
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 380, 0, 300)
+main.Position = UDim2.new(0.5, -190, 0.5, -150)
+main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+main.BorderSizePixel = 0
+main.Visible = true
+main.Parent = gui
+makeDraggable(main)
 
-FarmTab:AddToggle({
-    Name = "Auto Farm",
-    Default = false,
-    Callback = function(Value)
-        AutoFarm = Value
-        while AutoFarm do task.wait()
+--===[ TÍTULO DO SCRIPTER ]===--
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Text = "O MAESTRO"
+title.BackgroundTransparency = 0
+title.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+title.Font = Enum.Font.GothamBold
+title.TextColor3 = Color3.fromRGB(170, 0, 255)
+title.TextScaled = true
+
+--===[ BOTÃO PARA ESCONDER/MOSTRAR ]===--
+local icon = Instance.new("TextButton", gui)
+icon.Size = UDim2.new(0, 50, 0, 50)
+icon.Position = UDim2.new(0, 10, 1, -60)
+icon.BackgroundColor3 = Color3.fromRGB(170, 0, 255)
+icon.Text = "7"
+icon.TextColor3 = Color3.fromRGB(255, 255, 255)
+icon.Font = Enum.Font.GothamBold
+icon.TextScaled = true
+icon.BorderSizePixel = 0
+makeDraggable(icon)
+
+icon.MouseButton1Click:Connect(function()
+    main.Visible = not main.Visible
+end)
+
+--===[ ÁREA PARA EXPANSÕES (ex: botões, abas, opções) ]===--
+--[[
+Exemplo de botão para futura expansão:
+
+local botao = Instance.new("TextButton", main)
+botao.Size = UDim2.new(0, 100, 0, 30)
+botao.Position = UDim2.new(0, 20, 0, 60)
+botao.Text = "Auto Farm"
+botao.BackgroundColor3 = Color3.fromRGB(60, 0, 100)
+botao.TextColor3 = Color3.fromRGB(255, 255, 255)
+botao.Font = Enum.Font.Gotham
+botao.TextScaled = true
+botao.MouseButton1Click:Connect(function()
+    print("Auto Farm Ativado")
+end)
+--]]
+
+-- Auto Farm Toggle
+local AutoFarm = false
+
+-- Botão: Ativar Auto Farm
+local btnAtivar = Instance.new("TextButton", main)
+btnAtivar.Size = UDim2.new(0, 160, 0, 35)
+btnAtivar.Position = UDim2.new(0, 20, 0, 60)
+btnAtivar.Text = "Ativar Auto Farm"
+btnAtivar.BackgroundColor3 = Color3.fromRGB(90, 0, 160)
+btnAtivar.TextColor3 = Color3.fromRGB(255, 255, 255)
+btnAtivar.Font = Enum.Font.GothamBold
+btnAtivar.TextScaled = true
+btnAtivar.BorderSizePixel = 0
+
+-- Botão: Desativar Auto Farm
+local btnDesativar = Instance.new("TextButton", main)
+btnDesativar.Size = UDim2.new(0, 160, 0, 35)
+btnDesativar.Position = UDim2.new(0, 200, 0, 60)
+btnDesativar.Text = "Desativar Auto Farm"
+btnDesativar.BackgroundColor3 = Color3.fromRGB(140, 0, 60)
+btnDesativar.TextColor3 = Color3.fromRGB(255, 255, 255)
+btnDesativar.Font = Enum.Font.GothamBold
+btnDesativar.TextScaled = true
+btnDesativar.BorderSizePixel = 0
+
+-- Função de ativar haki (buso)
+local function ativarHaki()
+    pcall(function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
+    end)
+end
+
+-- Loop de Auto Farm
+spawn(function()
+    while true do
+        wait(0.5)
+        if AutoFarm then
             pcall(function()
-                EnableHaki()
-                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                        repeat task.wait()
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,10,0)
+                ativarHaki()
+                local player = game.Players.LocalPlayer
+                local char = player.Character or player.CharacterAdded:Wait()
+                for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+                        repeat wait()
+                            char.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)
                             game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
                         until v.Humanoid.Health <= 0 or not AutoFarm
+                        break
                     end
                 end
             end)
         end
     end
-})
+end)
 
--- AUTO STATS
-local StatsTab = Window:MakeTab({
-    Name = "Auto Stats",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+-- Ações dos botões
+btnAtivar.MouseButton1Click:Connect(function()
+    AutoFarm = true
+end)
 
-StatsTab:AddDropdown({
-    Name = "Escolha o Atributo",
-    Default = "Melee",
-    Options = {"Melee", "Defense", "Sword", "Gun", "Blox Fruit"},
-    Callback = function(Value)
-        StatType = Value
-    end
-})
-
-StatsTab:AddToggle({
-    Name = "Auto Stats",
-    Default = false,
-    Callback = function(Value)
-        AutoStats = Value
-        while AutoStats do task.wait(1)
-            pcall(function()
-                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AddPoint", StatType, 1)
-            end)
-        end
-    end
-})
-
--- TELEPORT
-local TeleportTab = Window:MakeTab({
-    Name = "Teleporte",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
-
-local ilhas = {
-    ["Inicio"] = Vector3.new(939, 125, 1252),
-    ["Jungle"] = Vector3.new(-1235, 11, 475),
-    ["Desert"] = Vector3.new(1300, 12, 4200),
-    ["Frozen Village"] = Vector3.new(110, 50, -1400)
-}
-
-for nome, pos in pairs(ilhas) do
-    TeleportTab:AddButton({
-        Name = nome,
-        Callback = function()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(pos)
-        end
-    })
-end
-
--- FINALIZAR UI
-OrionLib:Init()
+btnDesativar.MouseButton1Click:Connect(function()
+    AutoFarm = false
+end)
