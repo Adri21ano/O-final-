@@ -96,47 +96,16 @@ configButton.MouseButton1Click:Connect(function()
     configPanel.Visible = not configPanel.Visible
 end)
 
--- Label Status do Jogador
-local playerStatus = Instance.new("TextLabel", configPanel)
-playerStatus.Size = UDim2.new(1, -10, 0, 50)
-playerStatus.Position = UDim2.new(0, 5, 0, 10)
-playerStatus.BackgroundTransparency = 1
-playerStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
-playerStatus.Font = Enum.Font.Gotham
-playerStatus.TextScaled = true
-playerStatus.Text = "Status: Carregando..."
-
--- Label Lua Cheia
-local moonStatus = Instance.new("TextLabel", configPanel)
-moonStatus.Size = UDim2.new(1, -10, 0, 50)
-moonStatus.Position = UDim2.new(0, 5, 0, 70)
-moonStatus.BackgroundTransparency = 1
-moonStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
-moonStatus.Font = Enum.Font.Gotham
-moonStatus.TextScaled = true
-moonStatus.Text = "Lua Cheia: ? noites"
-
--- Label Fábrica
-local factoryStatus = Instance.new("TextLabel", configPanel)
-factoryStatus.Size = UDim2.new(1, -10, 0, 50)
-factoryStatus.Position = UDim2.new(0, 5, 0, 130)
-factoryStatus.BackgroundTransparency = 1
-factoryStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
-factoryStatus.Font = Enum.Font.Gotham
-factoryStatus.TextScaled = true
-factoryStatus.Text = "Fábrica: ? min"
-
--- Função para atualizar as informações a cada 5 segundos
 task.spawn(function()
     while task.wait(5) do
         -- Atualizar nome do jogador e level
         local level = player:FindFirstChild("Data") and player.Data:FindFirstChild("Level") and player.Data.Level.Value or "???"
         playerStatus.Text = "Level: "..tostring(level)
 
-        -- Pegar informações da Lua Cheia e Fábrica (exemplos simples)
-        local noitesRestantes = game.Lighting:FindFirstChild("NightCount") and (3 - game.Lighting.NightCount.Value) or "?"
-        moonStatus.Text = "Lua: "..tostring(noitesRestantes).." noites"
+        -- Atualizar Lua Cheia baseado no FullMoonEvent
+        moonStatus.Text = "Lua Cheia em: "..tostring(getNoitesParaLuaCheia()).." noites"
 
+        -- Atualizar tempo para a Fábrica (essa parte é separada, pode ser melhorada)
         local tempoFabrica = game.ReplicatedStorage:FindFirstChild("FactoryTime") and game.ReplicatedStorage.FactoryTime.Value or "?"
         factoryStatus.Text = "Fábrica: "..tostring(tempoFabrica).." min"
     end
