@@ -150,3 +150,65 @@ end)
 btnDesativar.MouseButton1Click:Connect(function()
     AutoFarm = false
 end)
+
+-- Variáveis de Controle
+local autofarmActive = false
+local autofarmLoop
+
+-- Botão para ativar/desativar o AutoFarm
+local farmButton = Instance.new("TextButton", main)
+farmButton.Size = UDim2.new(0.8, 0, 0, 50)
+farmButton.Position = UDim2.new(0.1, 0, 0, 60)
+farmButton.BackgroundColor3 = Color3.fromRGB(170, 0, 255)
+farmButton.BorderSizePixel = 0
+farmButton.Text = "Ativar AutoFarm"
+farmButton.Font = Enum.Font.GothamBold
+farmButton.TextColor3 = Color3.new(1, 1, 1)
+farmButton.TextScaled = true
+
+-- Função de AutoFarm
+local function startAutoFarm()
+    if autofarmLoop then return end -- Prevê múltiplos loops
+
+    autofarmLoop = task.spawn(function()
+        while autofarmActive do
+            pcall(function()
+                -- Lógica de encontrar o inimigo mais próximo
+                local closestEnemy
+                local shortestDistance = math.huge
+                for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
+                        local distance = (enemy.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+                        if distance < shortestDistance then
+                            closestEnemy = enemy
+                            shortestDistance = distance
+                        end
+                    end
+                end
+
+                -- Se encontrou um inimigo, move até ele e ataca
+                if closestEnemy then
+                    player.Character.HumanoidRootPart.CFrame = closestEnemy.HumanoidRootPart.CFrame * CFrame.new(0, 3, 0)
+                    -- Simular ataque
+                    for _, tool in pairs(player.Backpack:GetChildren()) do
+                        if tool:IsA("Tool") then
+                            tool.Parent = player.Character
+                            tool:Activate()
+                        end
+                    end
+                end
+            end)
+            task.wait(0.5)
+        end
+        autofarmLoop = nil
+    end)
+end
+
+-- Ligar/Desligar AutoFarm
+farmButton.MouseButton1Click:Connect(function()
+    autofarmActive = not autofarmActive
+    farmButton.Text = autofarmActive and "Desativar AutoFarm" or "Ativar AutoFarm"
+    if autofarmActive then
+        startAutoFarm()
+    end
+end)
