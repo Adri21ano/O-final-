@@ -73,112 +73,71 @@ icon.MouseButton1Click:Connect(function()
     main.Visible = not main.Visible
 end)
 
--- Serviços
-local TweenService = game:GetService("TweenService")
-local player = game.Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
-local humRoot = char:WaitForChild("HumanoidRootPart")
+-- Painel de Configurações (começa invisível)
+local configPanel = Instance.new("Frame", main)
+configPanel.Size = UDim2.new(0, 150, 0, 200)
+configPanel.Position = UDim2.new(0, 10, 0, 50) -- canto superior esquerdo abaixo do título
+configPanel.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+configPanel.Visible = false
+configPanel.BorderSizePixel = 0
 
--- Variáveis
-local autofarm = false
-local mobName = "Bandit" -- << Nome do mob que você quer farmar
+-- Botão para abrir/fechar o painel de Configurações
+local configButton = Instance.new("TextButton", main)
+configButton.Size = UDim2.new(0, 120, 0, 30)
+configButton.Position = UDim2.new(0, 10, 0, 10)
+configButton.Text = "Configurações"
+configButton.BackgroundColor3 = Color3.fromRGB(170, 0, 255)
+configButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+configButton.Font = Enum.Font.GothamBold
+configButton.TextScaled = true
+configButton.BorderSizePixel = 0
 
--- Função para pegar missão
-local function getQuest()
-    pcall(function()
-        if not player.PlayerGui:FindFirstChild("Quest") then
-            for _, npc in pairs(game:GetService("Workspace").NPCs:GetChildren()) do
-                if npc:FindFirstChild("Head") and (npc.Head.Position - humRoot.Position).Magnitude < 100 then
-                    humRoot.CFrame = npc.Head.CFrame * CFrame.new(0, 3, 0)
-                    task.wait(1)
-
-                    -- Simula click no ProximityPrompt
-                    fireproximityprompt(npc:FindFirstChildOfClass("ProximityPrompt"))
-                    task.wait(1)
-
-                    -- Seleciona a primeira opção da quest
-                    local questGui = player.PlayerGui:WaitForChild("QuestSelect", 3)
-                    if questGui then
-                        local button = questGui:FindFirstChild("Container"):FindFirstChild("QuestButton1")
-                        if button then
-                            button.Size = UDim2.new(0, 0, 0, 0) -- Bypassa para não travar
-                            button.Visible = true
-                            fireclickdetector(button:FindFirstChildWhichIsA("ClickDetector"))
-                        end
-                    end
-                end
-            end
-        end
-    end)
-end
-
--- Função para mover o player até o inimigo suavemente
-local function toTarget(targetPos)
-    local tween = TweenService:Create(humRoot, TweenInfo.new((humRoot.Position - targetPos).Magnitude/300, Enum.EasingStyle.Linear), {CFrame = CFrame.new(targetPos)})
-    tween:Play()
-    tween.Completed:Wait()
-end
-
--- Função para atacar inimigos
-local function attackEnemy(enemy)
-    pcall(function()
-        if not enemy:FindFirstChild("Humanoid") then return end
-        repeat
-            -- Equipar arma
-            for _, tool in pairs(player.Backpack:GetChildren()) do
-                if tool:IsA("Tool") then
-                    tool.Parent = player.Character
-                    tool:Activate()
-                end
-            end
-
-            -- Mover até inimigo
-            if (humRoot.Position - enemy.HumanoidRootPart.Position).Magnitude > 5 then
-                toTarget(enemy.HumanoidRootPart.Position + Vector3.new(0, 3, 0))
-            end
-
-            task.wait(0.2)
-        until enemy.Humanoid.Health <= 0 or not autofarm
-    end)
-end
-
--- Sistema principal do AutoFarm
-spawn(function()
-    while task.wait(0.2) do
-        if autofarm then
-            getQuest()
-
-            local closest
-            local shortest = math.huge
-            for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                if enemy.Name == mobName and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
-                    local distance = (enemy.HumanoidRootPart.Position - humRoot.Position).Magnitude
-                    if distance < shortest then
-                        shortest = distance
-                        closest = enemy
-                    end
-                end
-            end
-
-            if closest then
-                attackEnemy(closest)
-            end
-        end
-    end
+configButton.MouseButton1Click:Connect(function()
+    configPanel.Visible = not configPanel.Visible
 end)
 
--- Botão exemplo para ativar/desativar o AutoFarm
-local toggleButton = Instance.new("TextButton", main)
-toggleButton.Size = UDim2.new(0.8, 0, 0, 50)
-toggleButton.Position = UDim2.new(0.1, 0, 0, 130)
-toggleButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-toggleButton.Text = "Ativar AutoFarm"
-toggleButton.TextColor3 = Color3.new(1,1,1)
-toggleButton.Font = Enum.Font.GothamBold
-toggleButton.TextScaled = true
-toggleButton.BorderSizePixel = 0
+-- Label Status do Jogador
+local playerStatus = Instance.new("TextLabel", configPanel)
+playerStatus.Size = UDim2.new(1, -10, 0, 50)
+playerStatus.Position = UDim2.new(0, 5, 0, 10)
+playerStatus.BackgroundTransparency = 1
+playerStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
+playerStatus.Font = Enum.Font.Gotham
+playerStatus.TextScaled = true
+playerStatus.Text = "Status: Carregando..."
 
-toggleButton.MouseButton1Click:Connect(function()
-    autofarm = not autofarm
-    toggleButton.Text = autofarm and "Desativar AutoFarm" or "Ativar AutoFarm"
+-- Label Lua Cheia
+local moonStatus = Instance.new("TextLabel", configPanel)
+moonStatus.Size = UDim2.new(1, -10, 0, 50)
+moonStatus.Position = UDim2.new(0, 5, 0, 70)
+moonStatus.BackgroundTransparency = 1
+moonStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
+moonStatus.Font = Enum.Font.Gotham
+moonStatus.TextScaled = true
+moonStatus.Text = "Lua Cheia: ? noites"
+
+-- Label Fábrica
+local factoryStatus = Instance.new("TextLabel", configPanel)
+factoryStatus.Size = UDim2.new(1, -10, 0, 50)
+factoryStatus.Position = UDim2.new(0, 5, 0, 130)
+factoryStatus.BackgroundTransparency = 1
+factoryStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
+factoryStatus.Font = Enum.Font.Gotham
+factoryStatus.TextScaled = true
+factoryStatus.Text = "Fábrica: ? min"
+
+-- Função para atualizar as informações a cada 5 segundos
+task.spawn(function()
+    while task.wait(5) do
+        -- Atualizar nome do jogador e level
+        local level = player:FindFirstChild("Data") and player.Data:FindFirstChild("Level") and player.Data.Level.Value or "???"
+        playerStatus.Text = "Level: "..tostring(level)
+
+        -- Pegar informações da Lua Cheia e Fábrica (exemplos simples)
+        local noitesRestantes = game.Lighting:FindFirstChild("NightCount") and (3 - game.Lighting.NightCount.Value) or "?"
+        moonStatus.Text = "Lua: "..tostring(noitesRestantes).." noites"
+
+        local tempoFabrica = game.ReplicatedStorage:FindFirstChild("FactoryTime") and game.ReplicatedStorage.FactoryTime.Value or "?"
+        factoryStatus.Text = "Fábrica: "..tostring(tempoFabrica).." min"
+    end
 end)
